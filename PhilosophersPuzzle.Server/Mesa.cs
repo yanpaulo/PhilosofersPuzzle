@@ -6,11 +6,11 @@ using System.Text;
 using System.Linq;
 using System.Threading;
 
-namespace PhilosofersPuzzle.Server
+namespace PhilosophersPuzzle.Server
 {
     public class Mesa
     {
-        private readonly string WaitPipeName = "YansCorp.PP";
+        private readonly string PipeName = "YansCorp.PP";
 
         private List<Thread> _threads = new List<Thread>();
         private List<Garfo> _garfos = new List<Garfo>();
@@ -27,7 +27,7 @@ namespace PhilosofersPuzzle.Server
 
         public void RecebeFilosofo()
         {
-            var stream = new NamedPipeServerStream(WaitPipeName, PipeDirection.InOut, 100);
+            var stream = new NamedPipeServerStream(PipeName, PipeDirection.InOut, 100);
             stream.WaitForConnection();
 
             if (!_garfos.Any())

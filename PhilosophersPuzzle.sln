@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhilosofersPuzzle.Server", "PhilosofersPuzzle.Server\PhilosofersPuzzle.Server.csproj", "{B3013A1A-72E4-4482-AE84-22E612DADCD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhilosophersPuzzle.Server", "PhilosophersPuzzle.Server\PhilosophersPuzzle.Server.csproj", "{B3013A1A-72E4-4482-AE84-22E612DADCD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhilosofersPuzzle.Client", "PhilosofersPuzzle.Client\PhilosofersPuzzle.Client.csproj", "{9779AD71-4668-4C4B-995F-8961203FA172}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhilosophersPuzzle.Client", "PhilosophersPuzzle.Client\PhilosophersPuzzle.Client.csproj", "{9779AD71-4668-4C4B-995F-8961203FA172}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

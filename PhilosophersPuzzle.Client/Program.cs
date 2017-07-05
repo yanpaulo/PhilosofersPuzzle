@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Threading;
 
-namespace PhilosofersPuzzle.Client
+namespace PhilosophersPuzzle.Client
 {
     class Program
     {
