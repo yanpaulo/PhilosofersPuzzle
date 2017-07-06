@@ -7,42 +7,22 @@ namespace PhilosophersPuzzle.Client
 {
     class Program
     {
-        private static readonly string WaitPipeName = "YansCorp.PP";
-        private static readonly Random rng = new Random();
-
         static void Main(string[] args)
         {
-            int n = args.Length > 0 ? int.Parse(args[0]) : 2;
-            for (int i = 0; i < n; i++)
+            int numArgs = args.Length;
+            int n = numArgs > 0 ? int.Parse(args[0]) : 3;
+
+            var client = new Cliente(n);
+            if (numArgs >= 2)
             {
-                var t = new Thread(MetodoFilosofo);
-                t.Start();
-                Thread.Sleep(500);
+                client.MinTime = int.Parse(args[1]);
             }
-        }
-
-        private static void MetodoFilosofo()
-        {
-            var stream = new NamedPipeClientStream(".", WaitPipeName, PipeDirection.InOut);
-            stream.Connect();
-
-            int id = stream.ReadByte();
-            using (var writer = new StreamWriter(stream) { AutoFlush = true })
+            if (numArgs >= 3)
             {
-                while (stream.IsConnected)
-                {
-                    Console.WriteLine($"Filosofo {id} esta pegando garfos.");
-                    writer.WriteLine("pega");
-                    stream.ReadByte();
-
-                    Console.WriteLine($"Filosofo {id} esta comendo.");
-                    Thread.Sleep(rng.Next(10, 15) * 1000);
-
-                    writer.WriteLine("solta");
-                    Console.WriteLine($"Filosofo {id} soltou os garfos e esta filosofando.");
-                    Thread.Sleep(rng.Next(10, 15) * 1000);
-                }
+                client.MaxTime = int.Parse(args[2]);
             }
+            client.Inicia();
+            Console.ReadKey();
         }
     }
 }
