@@ -30,24 +30,51 @@ namespace PhilosophersPuzzle.Server
             var stream = new NamedPipeServerStream(PipeName, PipeDirection.InOut, 100);
             stream.WaitForConnection();
 
-            if (!_garfos.Any())
+            //Somente adiciona um garfo na mesa se já houverem pelo menos três filósofos.
+            if (_filosofos.Count >= 3)
             {
-                _garfos.Add(new Garfo());
+                _garfos.Add(new Garfo()); 
             }
-            _garfos.Add(new Garfo());
 
             var filosofo = new Filosofo
             {
                 Id = _filosofos.Count,
                 Stream = stream,
-                Garfos = _garfos.Skip(_garfos.Count - 2).Take(2).ToArray()
+                Garfos = _garfos.Any() ? 
+                            //Se houverem garfos na mesa, pega o último e o primeiro.
+                            new[] { _garfos.Last(), _garfos.First() } :
+                            null
             };
 
             _filosofos.Add(filosofo);
-            
+
             var thread = new Thread(() => AtendeFilosofo(filosofo));
             _threads.Add(thread);
-            thread.Start();
+
+            //Se houverem mais que três filósofos na mesa, somente inicia a thread.
+            if (_filosofos.Count > 3)
+            {
+                thread.Start();
+            }
+            //Se o filósofo recém-chegado for o terceiro.
+            else if (_filosofos.Count == 3)
+            {
+                //Coloca 3 garfos na mesa
+                _garfos.AddRange(new[] { new Garfo(), new Garfo(), new Garfo() });
+
+                //Entrega os garfos certos para cada filósofo
+                for (int i = 0; i < 2; i++)
+                {
+                    _filosofos[i].Garfos = _garfos.Skip(i).Take(2).ToArray();
+                }
+                _filosofos[2].Garfos = new[] { _garfos.Last(), _garfos.First() };
+
+                //Inicia as threads
+                foreach (var t in _threads)
+                {
+                    t.Start();
+                }
+            }
         }
 
         private void AtendeFilosofo(Filosofo filosofo)
@@ -60,8 +87,8 @@ namespace PhilosophersPuzzle.Server
                 while (stream.IsConnected)
                 {
                     var message = reader.ReadLine();
-                    
-                    
+
+
                     if (message == "pega")
                     {
                         //Índice de um garfo aleatório
@@ -92,7 +119,7 @@ namespace PhilosophersPuzzle.Server
                         //Eu num intindi o que ele falô
                     }
 
-                    
+
                 }
             }
         }
