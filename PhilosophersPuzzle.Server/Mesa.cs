@@ -11,12 +11,13 @@ namespace PhilosophersPuzzle.Server
     public class Mesa
     {
         private readonly string PipeName = "YansCorp.PP";
+        private readonly int MaxWaitTime = 5;
 
         private List<Thread> _threads = new List<Thread>();
         private List<Garfo> _garfos = new List<Garfo>();
         private List<Filosofo> _filosofos = new List<Filosofo>();
         private Random _rng = new Random();
-
+        
         public void Liga()
         {
             while (true)
@@ -87,22 +88,39 @@ namespace PhilosophersPuzzle.Server
                 while (stream.IsConnected)
                 {
                     var message = reader.ReadLine();
-
-
+                    
                     if (message == "pega")
                     {
-                        //Índice de um garfo aleatório
-                        var garfoIndex = _rng.Next(0, 2);
-                        var garfo = filosofo.Garfos[garfoIndex];
-                        Console.WriteLine($"Filosofo {filosofo.Id} pegando garfo {_garfos.IndexOf(garfo)}");
-                        garfo.Semaforo.WaitOne();
-                        Console.WriteLine($"Filosofo {filosofo.Id} pegou garfo {_garfos.IndexOf(garfo)}");
+                        var temGarfos = false;
 
-                        garfoIndex = 1 - garfoIndex;
-                        garfo = filosofo.Garfos[garfoIndex];
-                        Console.WriteLine($"Filosofo {filosofo.Id} pegando garfo {_garfos.IndexOf(garfo)}");
-                        garfo.Semaforo.WaitOne();
-                        Console.WriteLine($"Filosofo {filosofo.Id} pegou garfo {_garfos.IndexOf(garfo)}");
+                        while (!temGarfos)
+                        {
+                            //Índice de um garfo aleatório
+                            var garfoIndex = _rng.Next(0, 2);
+                            var garfo = filosofo.Garfos[garfoIndex];
+                            Console.WriteLine($"Filosofo {filosofo.Id} pegando garfo {_garfos.IndexOf(garfo)}");
+                            garfo.Semaforo.WaitOne();
+                            Console.WriteLine($"Filosofo {filosofo.Id} pegou garfo {_garfos.IndexOf(garfo)}");
+
+                            garfoIndex = 1 - garfoIndex;
+                            garfo = filosofo.Garfos[garfoIndex];
+                            Console.WriteLine($"Filosofo {filosofo.Id} pegando garfo {_garfos.IndexOf(garfo)}");
+                            
+                            if (garfo.Semaforo.WaitOne(MaxWaitTime))
+                            {
+                                temGarfos = true;
+                                Console.WriteLine($"Filosofo {filosofo.Id} pegou garfo {_garfos.IndexOf(garfo)}"); 
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Filosofo {filosofo.Id} desistiu de pegar o garfo {_garfos.IndexOf(garfo)}");
+
+                                garfoIndex = 1 - garfoIndex;
+                                garfo = filosofo.Garfos[garfoIndex];
+                                Console.WriteLine($"Filosofo {filosofo.Id} esta soltando o garfo o garfo {_garfos.IndexOf(garfo)}");
+                                garfo.Semaforo.Release();
+                            }
+                        }
 
                         stream.WriteByte(1);
                     }
