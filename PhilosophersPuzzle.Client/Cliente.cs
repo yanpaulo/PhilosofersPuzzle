@@ -12,8 +12,8 @@ namespace PhilosophersPuzzle.Client
         private readonly string PipeName = "YansCorp.PP";
         private readonly Random rng = new Random();
 
-        public int MinTime { get; set; } = 10;
-        public int MaxTime { get; set; } = 15;
+        public int MinTime { get; set; } = 1;
+        public int MaxTime { get; set; } = 5;
         public int NumFilosofos { get; private set; }
 
         public Cliente(int numFilosofos)
@@ -45,11 +45,11 @@ namespace PhilosophersPuzzle.Client
                     stream.ReadByte();
 
                     Console.WriteLine($"Filosofo {id} esta comendo.");
-                    Thread.Sleep(rng.Next(10, 15) * 1000);
+                    Thread.Sleep(rng.Next(MinTime, MaxTime) * 1000);
 
                     writer.WriteLine("solta");
                     Console.WriteLine($"Filosofo {id} soltou os garfos e esta filosofando.");
-                    Thread.Sleep(rng.Next(10, 15) * 1000);
+                    Thread.Sleep(rng.Next(MinTime, MaxTime) * 1000);
                 }
             }
         }
